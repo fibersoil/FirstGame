@@ -4,6 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+
+#include "Engine/StaticMesh.h"
+#include "GameFrameWork/SpringArmComponent.h"
+#include "Camera/CameraComponent.h"
+
 #include "MyPlayer.generated.h"
 
 UCLASS()
@@ -26,4 +31,22 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+private:
+	void MoveFB(float Value);
+	void MoveLR(float Value);
+	void Rotate(float Value);
+
+private:
+	UPROPERTY(EditAnywhere)
+		float MoveSpeed = 1.0f;
+
+	UPROPERTY(EditAnywhere)
+		float RotationSpeed = 1.0f;
+
+	UPROPERTY(EditDefaultsOnly)
+		UStaticMeshComponent* PlayerMesh;
+	UPROPERTY(EditDefaultsOnly)
+		USpringArmComponent* PlayerSpringArm;
+	UPROPERTY(EditDefaultsOnly)
+		UCameraComponent* PlayerCamera;
 };
