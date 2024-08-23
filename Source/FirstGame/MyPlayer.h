@@ -8,7 +8,8 @@
 #include "Engine/StaticMesh.h"
 #include "GameFrameWork/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
-#include "Animation/AnimMontage.h"  
+#include "Animation/AnimMontage.h" 
+#include "MyEnemy.h"
 
 #include "MyPlayer.generated.h"
 
@@ -47,6 +48,7 @@ private:
 	void Rotate(float Value);
 
 	void PlayAttackMontage();
+	void PerformSphereTrace();
 	void Attack();
 	void OnAttackEnd();
 

@@ -68,12 +68,49 @@ void AMyPlayer::PlayAttackMontage()
     }
 }
 
+void AMyPlayer::PerformSphereTrace()
+{
+    FVector StartLocation = GetActorLocation();
+    FVector ForwardVector = GetActorForwardVector();
+    const float TraceDistance = 150.0f;
+    const float TraceRadius = 25.0f;
+    FVector EndLocation = StartLocation + (ForwardVector * TraceDistance);
+
+    FHitResult OutHit;
+    FCollisionQueryParams CollisionParams;
+    CollisionParams.AddIgnoredActor(this); // ºöÂÔ×ÔÉíµÄÅö×²¼ì²â
+
+    // Perform the sphere trace
+    bool bIsHit = GetWorld()->SweepSingleByChannel(
+        OutHit,
+        StartLocation,
+        EndLocation,
+        FQuat::Identity,
+        ECC_Pawn,
+        FCollisionShape::MakeSphere(TraceRadius),
+        CollisionParams
+    );
+
+    // Debug line to visualize the trace
+    FColor LineColor = bIsHit ? FColor::Green : FColor::Red;
+    DrawDebugLine(GetWorld(), StartLocation, EndLocation, LineColor, false, 1.0f, 0, 1.0f);
+    DrawDebugSphere(GetWorld(), bIsHit ? OutHit.Location : EndLocation, TraceRadius, 32, LineColor, false, 1.0f);
+
+    if (bIsHit)
+    {
+        AMyEnemy* DamageReciever = Cast<AMyEnemy>(OutHit.GetActor());
+        DamageReciever->SetHealth(DamageReciever->GetHealth() - 10.0f);
+        //UE_LOG(LogTemp, Warning, TEXT("Hit: %s"), *OutHit.Actor->GetName());
+    }
+}
+
 void AMyPlayer::Attack()
 {
     const bool CanAttack = ActionState == EActionState::EAS_Onoccupied;
     if (CanAttack) {
         GetWorldTimerManager().SetTimer(TimerHandle, this, &AMyPlayer::OnAttackEnd, 0.5f, false);
         PlayAttackMontage();
+        PerformSphereTrace();
         ActionState = EActionState::EAS_Attacking;
     }
     
