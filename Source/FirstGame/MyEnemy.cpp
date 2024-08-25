@@ -36,6 +36,7 @@ void AMyEnemy::SetHealth(float value)
 {
 	Health = value;
 	if (Health <= 0.0f) {
+		EnemyAlive = false;
 		HandleDeath();
 	}
 }
@@ -45,4 +46,33 @@ void AMyEnemy::HandleDeath()
 	// Enable physics simulation on the skeletal mesh to create ragdoll effect
 	GetMesh()->SetSimulatePhysics(true);
 	GetMesh()->SetCollisionProfileName(UCollisionProfile::PhysicsActor_ProfileName);
+	GetWorldTimerManager().SetTimer(DestroyHandler, this, &AMyEnemy::DestroyEnemy, 4.0f, false);
+}
+
+void AMyEnemy::DestroyEnemy() {
+	Destroy();
+}
+
+void AMyEnemy::PlayAttackMontage()
+{
+    UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+    if (AnimInstance && AttackMontage) {
+        AnimInstance->Montage_Play(AttackMontage);
+    }
+}
+
+void AMyEnemy::Attack()
+{
+    const bool CanAttack = ActionState == EEnemyActionState::EAS_Onoccupied;
+    if (CanAttack) {
+        GetWorldTimerManager().SetTimer(TimerHandle, this, &AMyEnemy::OnAttackEnd, 0.5f, false);
+        PlayAttackMontage();
+        ActionState = EEnemyActionState::EAS_Attacking;
+    }
+
+}
+
+void AMyEnemy::OnAttackEnd()
+{
+    ActionState = EEnemyActionState::EAS_Onoccupied;
 }

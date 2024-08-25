@@ -92,9 +92,9 @@ void AMyPlayer::PerformSphereTrace()
     );
 
     // Debug line to visualize the trace
-    FColor LineColor = bIsHit ? FColor::Green : FColor::Red;
-    DrawDebugLine(GetWorld(), StartLocation, EndLocation, LineColor, false, 1.0f, 0, 1.0f);
-    DrawDebugSphere(GetWorld(), bIsHit ? OutHit.Location : EndLocation, TraceRadius, 32, LineColor, false, 1.0f);
+    //FColor LineColor = bIsHit ? FColor::Green : FColor::Red;
+    //DrawDebugLine(GetWorld(), StartLocation, EndLocation, LineColor, false, 1.0f, 0, 1.0f);
+    //DrawDebugSphere(GetWorld(), bIsHit ? OutHit.Location : EndLocation, TraceRadius, 32, LineColor, false, 1.0f);
 
     if (bIsHit)
     {
@@ -106,18 +106,18 @@ void AMyPlayer::PerformSphereTrace()
 
 void AMyPlayer::Attack()
 {
-    const bool CanAttack = ActionState == EActionState::EAS_Onoccupied;
+    const bool CanAttack = ActionState == EPlayerActionState::EAS_Onoccupied;
     if (CanAttack) {
         GetWorldTimerManager().SetTimer(TimerHandle, this, &AMyPlayer::OnAttackEnd, 0.5f, false);
         PlayAttackMontage();
         PerformSphereTrace();
-        ActionState = EActionState::EAS_Attacking;
+        ActionState = EPlayerActionState::EAS_Attacking;
     }
     
 }
 
 void AMyPlayer::OnAttackEnd()
 {
-    ActionState = EActionState::EAS_Onoccupied;
+    ActionState = EPlayerActionState::EAS_Onoccupied;
 }
 

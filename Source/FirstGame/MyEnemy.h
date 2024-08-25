@@ -4,7 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+
+#include "Animation/AnimMontage.h" 
+
 #include "MyEnemy.generated.h"
+
+UENUM(BlueprintType)
+enum class EEnemyActionState : uint8
+{
+	EAS_Onoccupied UMETA(Displayname = "Unoccupied"),
+	EAS_Attacking UMETA(Displayname = "Attacking")
+};
 
 UCLASS()
 class FIRSTGAME_API AMyEnemy : public ACharacter
@@ -18,6 +28,8 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	FTimerHandle TimerHandle, DestroyHandler;
 
 public:	
 	// Called every frame
@@ -34,9 +46,22 @@ public:
 
 private:
 	void HandleDeath();
+	void DestroyEnemy();
+	void OnAttackEnd();
+	void PlayAttackMontage();
+	UFUNCTION(BlueprintCallable, Category = "MyEnemy")
+	void Attack();
 
 private:
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	float Health = 20.0f;
 
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	bool EnemyAlive = true;
+
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	UAnimMontage* AttackMontage;
+
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	EEnemyActionState ActionState = EEnemyActionState::EAS_Onoccupied;
 };

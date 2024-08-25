@@ -14,7 +14,7 @@
 #include "MyPlayer.generated.h"
 
 UENUM(BlueprintType)
-enum class EActionState : uint8
+enum class EPlayerActionState : uint8
 {
 	EAS_Onoccupied UMETA(Displayname = "Unoccupied"),
 	EAS_Attacking UMETA(Displayname = "Attacking")
@@ -57,7 +57,7 @@ private:
 		UAnimMontage* AttackMontage;
 	
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-		EActionState ActionState = EActionState::EAS_Onoccupied;
+		EPlayerActionState ActionState = EPlayerActionState::EAS_Onoccupied;
 
 	UPROPERTY(EditAnywhere)
 		float MoveSpeed = 1.0f;
